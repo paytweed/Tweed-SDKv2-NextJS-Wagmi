@@ -1,95 +1,106 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import {
+  useAccount,
+  useBalance,
+  useChainId,
+  useConnect,
+  useDisconnect,
+  useSendTransaction,
+  useSwitchChain,
+} from "wagmi";
 
 export default function Home() {
+  const account = useAccount();
+  const {
+    connectors,
+    connect,
+    status: connectStatus,
+    error: connectError,
+  } = useConnect();
+  const { disconnect } = useDisconnect();
+  const { chains, switchChain } = useSwitchChain();
+  const { sendTransaction } = useSendTransaction();
+  const chainId = useChainId();
+
+  const address = account.address;
+  const result = useBalance({
+    address,
+  });
+
+  async function handleSendTransaction() {
+    sendTransaction({
+      to: address!,
+      value: BigInt(0),
+      chainId: chainId,
+    });
+  }
+
+  const balance = result.data?.value;
+  const decimals = result.data?.decimals;
+  const balanceAsString =
+    balance && decimals ? Number(balance) / 10 ** decimals : "";
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
+    <>
+      <div>
+        <h1>TWEED X WAGMI</h1>
+        <h2>Account</h2>
         <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+          status: {account.status}
+          <br />
+          addresses: {account.addresses}
+          <br />
+          chainId: {account.chainId}
+          <br />
+          balance: {balanceAsString}
         </div>
+        {account.status === "connected" && (
+          <button type="button" onClick={() => disconnect()}>
+            Disconnect
+          </button>
+        )}
       </div>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <div>
+        <h2>Connect</h2>
+        {connectors.map((connector) => (
+          <button
+            key={connector.uid}
+            onClick={() => connect({ connector })}
+            type="button"
+          >
+            {connector.name}
+          </button>
+        ))}
+
+        {account.status === "connected" && (
+          <>
+            <h2>Switch Network</h2>
+
+            <div>
+              {chains.map((chain) => (
+                <button
+                  key={chain.id}
+                  onClick={() => switchChain({ chainId: chain.id })}
+                >
+                  {chain.name}
+                </button>
+              ))}
+            </div>
+
+            <div>
+              <h2>Send Transaction</h2>
+
+              <button onClick={handleSendTransaction}>send transaction</button>
+            </div>
+          </>
+        )}
+
+        <h3>Status</h3>
+        <div>{connectStatus}</div>
+        <div>{connectError?.message}</div>
       </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </>
   );
 }
