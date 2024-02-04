@@ -7,7 +7,11 @@ export const tweed = async (message: string) => {
     apiSecret: process.env.TWEED_API_SECRET as string,
     defaultBlockchainIds: ["ethereumSepolia"],
   });
-  const answer = await tweed.handleMessageFromFrontend(message, "1", "a@a.com");
+  const answer = await tweed.handleMessageFromFrontend(
+    JSON.stringify({ message }),
+    "1",
+    "a@a.com"
+  );
 
   return answer;
 };
