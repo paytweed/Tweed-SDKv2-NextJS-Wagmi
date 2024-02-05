@@ -1,6 +1,6 @@
 "use server";
 import { TweedBackendSDK } from "@paytweed/backend-sdk";
-console.log("process.env.TWEED_API_KEY", process.env.TWEED_API_KEY);
+console.log(process.env.TWEED_API_KEY, process.env.TWEED_API_KEY);
 
 export const tweed = async (message: string) => {
   console.log("send message to tweed", message);
