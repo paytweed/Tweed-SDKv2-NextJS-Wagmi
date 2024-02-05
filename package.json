@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -17,8 +17,7 @@
     "react": "^18",
     "react-dom": "^18",
     "viem": "^2.5.0",
-    "wagmi": "^2.5.4",
-    "auth0": "3.3.0"
+    "wagmi": "^2.5.4"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -2,7 +2,7 @@ import { Network, TweedClient } from "@paytweed/core-js";
 import { EthereumProvider } from "@paytweed/core-js/lib/Eip1193Provider";
 import { createConnector } from "@wagmi/core";
 
-type StorageItem = { "tweedSDK.disconnected": true };
+type StorageItem = { "tweedSDK.connected": boolean };
 
 export class TweedConnector {
   private client: TweedClient | null = null;
@@ -54,14 +54,14 @@ export class TweedConnector {
         const normalizedChainId = this.normalizeChainId(chainId);
 
         config.emitter.emit("change", { chainId: normalizedChainId, accounts });
-        await config.storage?.removeItem("tweedSDK.disconnected");
+        await config.storage?.setItem("tweedSDK.connected", true);
 
         return { chainId: normalizedChainId, accounts };
       },
 
       disconnect: async () => {
         this.client?.logout();
-        await config.storage?.setItem("tweedSDK.disconnected", true);
+        await config.storage?.removeItem("tweedSDK.connected");
       },
 
       getAccounts: async () => {
@@ -93,10 +93,8 @@ export class TweedConnector {
       getProvider: async (
         params: { chainId?: number | undefined } | undefined
       ): Promise<EthereumProvider> => {
-        const isDisconnected = await config.storage?.getItem(
-          "tweedSDK.disconnected"
-        );
-        if (isDisconnected) {
+        const isconnected = await config.storage?.getItem("tweedSDK.connected");
+        if (!isconnected) {
           console.warn(
             "Cannot get provider, User is disconnected, please connect using useConnect hook first."
           );
@@ -132,13 +130,11 @@ export class TweedConnector {
       },
 
       isAuthorized: async () => {
-        const isDisconnected = await config.storage?.getItem(
-          "tweedSDK.disconnected"
-        );
+        const isconnected = await config.storage?.getItem("tweedSDK.connected");
 
-        if (isDisconnected) return false;
+        if (isconnected) return true;
 
-        return true;
+        return false;
       },
 
       onAccountsChanged: async (accounts: any) => {

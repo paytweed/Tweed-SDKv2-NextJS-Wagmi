@@ -12,7 +12,7 @@ export const tweed = async (message: string) => {
     });
 
   const answer = await tweed.handleMessageFromFrontend(
-    JSON.stringify({ message }),
+    JSON.stringify(message),
     "1",
     "a@a.com"
   );
