@@ -1,23 +1,17 @@
 {
-  "name": "tweed-wagmi-next",
-  "version": "0.1.0",
+  "name": "auth0-test",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@paytweed/backend-sdk": "2.0.14",
-    "@paytweed/core-js": "0.3.7",
-    "@paytweed/frontend-sdk-react": "^2.0.11",
-    "@tanstack/react-query": "^5.17.19",
     "next": "14.1.0",
     "react": "^18",
-    "react-dom": "^18",
-    "viem": "^2.5.0",
-    "wagmi": "^2.5.4"
+    "react-dom": "^18"
   },
   "devDependencies": {
     "@types/node": "^20",
