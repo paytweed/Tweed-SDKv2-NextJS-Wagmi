@@ -1,26 +1,33 @@
 "use client";
-import { useEffect } from "react";
-import { getAccessToken } from "./auth";
 
+import { useTweedFrontendSDK } from "@paytweed/frontend-sdk-react";
 export default function Home() {
-  useEffect(() => {
-    const get = async () => {
-      const res = await getAccessToken({
-        apiKey: "lTb8oCLxqtYb9plUrm08zrQxTMQozRXx",
-        apiSecret:
-          "4hlL4JLXLSD4MVNZHczebowo40pIqqD1TM5H94XLEvQbwFnfio-fqKQmZAJjIRmM",
-        audience: "https://whitelabel.prod.paytweed.com",
-        domain: "paytweed.us.auth0.com",
-      });
-
-      console.log(res);
-    };
-    get();
-  }, []);
-
+  const sdk = useTweedFrontendSDK();
   return (
     <>
       <h1>TWEED</h1>
+
+      <button
+        onClick={() => {
+          sdk.wallet.create({
+            callbacks: {
+              onSuccess: (wallet) => {
+                console.log(wallet);
+              },
+            },
+          });
+        }}
+      >
+        Create Wallet
+      </button>
+
+      <button
+        onClick={() => {
+          sdk.wallet.showAddress();
+        }}
+      >
+        Show Wallet Address
+      </button>
     </>
   );
 }
