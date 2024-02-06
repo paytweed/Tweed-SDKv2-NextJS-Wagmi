@@ -22,20 +22,9 @@ const requestNewToken = async (options: {
 }): Promise<any> => {
   const { apiKey, apiSecret, audience, domain } = options;
   const auth0 = createAuthenticator({ apiKey, apiSecret, domain });
-  const token = await auth0.oauth.clientCredentialsGrant({ audience });
+  const token = await auth0.clientCredentialsGrant({ audience });
   return token;
 };
-
-// const refreshToken = async (options: {
-//   apiKey: string;
-//   apiSecret: string;
-//   domain: string;
-//   refresh_token: string;
-// }): Promise<any> => {
-//   const { apiKey, apiSecret, domain, refresh_token } = options;
-//   const auth0 = createAuthenticator({ apiKey, apiSecret, domain });
-//   return auth0.oauth.refreshTokenGrant({ refresh_token });
-// };
 
 const getAccessToken = async (options: {
   apiKey: string;
@@ -55,7 +44,7 @@ const getAccessToken = async (options: {
 
     console.log("Tweed Backend SDK: Auth0: Access token received", token);
 
-    return token.data.access_token;
+    return token.access_token;
   } catch (error) {
     console.error(
       "Tweed Backend SDK: Auth0: Error on requesting an access token",
